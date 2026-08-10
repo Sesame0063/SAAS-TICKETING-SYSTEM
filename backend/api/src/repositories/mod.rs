@@ -1,0 +1,11 @@
+pub mod attachment_repository;
+pub mod audit_repository;
+pub mod comment_repository;
+pub mod dashboard_repository;
+pub mod knowledge_base_repository;
+pub mod notification_repository;
+pub mod report_repository;
+pub mod search_repository;
+pub mod ticket_history_repository;
+pub mod ticket_repository;
+pub mod user_repository;
