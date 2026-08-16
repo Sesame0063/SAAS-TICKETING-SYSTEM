@@ -32,6 +32,7 @@ pub enum SearchResult {
         email: String,
         first_name: String,
         last_name: String,
+        role: String,
     },
     KnowledgeBase {
         id: Uuid,

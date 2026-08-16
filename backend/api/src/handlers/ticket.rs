@@ -62,8 +62,7 @@ pub async fn get_all_tickets(
     State(state): State<AppState>,
     AuthenticatedUser(user): AuthenticatedUser,
 ) -> Result<Json<Vec<TicketResponse>>, AppError> {
-    RoleGuard::agent_or_admin(&user)
-        .map_err(|_| AppError::Forbidden("Access denied".into()))?;
+    RoleGuard::agent_or_admin(&user).map_err(|_| AppError::Forbidden("Access denied".into()))?;
 
     let tickets = TicketService::get_all_tickets(&state.db)
         .await
@@ -77,14 +76,9 @@ pub async fn get_ticket(
     State(state): State<AppState>,
     AuthenticatedUser(user): AuthenticatedUser,
 ) -> Result<Json<TicketResponse>, AppError> {
-    let ticket = TicketService::get_ticket_by_id(
-        &state.db,
-        &state.redis,
-        ticket_id,
-        user.id,
-    )
-    .await
-    .map_err(|e| AppError::NotFound(e.to_string()))?;
+    let ticket = TicketService::get_ticket_by_id(&state.db, &state.redis, ticket_id, user.id)
+        .await
+        .map_err(|e| AppError::NotFound(e.to_string()))?;
 
     Ok(Json(ticket))
 }
@@ -133,8 +127,7 @@ pub async fn assign_ticket(
     AuthenticatedUser(user): AuthenticatedUser,
     Json(payload): Json<AssignTicketRequest>,
 ) -> Result<Json<TicketResponse>, AppError> {
-    RoleGuard::agent_or_admin(&user)
-        .map_err(|_| AppError::Forbidden("Access denied".into()))?;
+    RoleGuard::agent_or_admin(&user).map_err(|_| AppError::Forbidden("Access denied".into()))?;
 
     let ticket = TicketService::assign_ticket(
         &state.db,
@@ -156,8 +149,7 @@ pub async fn update_ticket_status(
     AuthenticatedUser(user): AuthenticatedUser,
     Json(payload): Json<UpdateStatusRequest>,
 ) -> Result<Json<TicketResponse>, AppError> {
-    RoleGuard::agent_or_admin(&user)
-        .map_err(|_| AppError::Forbidden("Access denied".into()))?;
+    RoleGuard::agent_or_admin(&user).map_err(|_| AppError::Forbidden("Access denied".into()))?;
 
     let ticket = TicketService::update_status(
         &state.db,

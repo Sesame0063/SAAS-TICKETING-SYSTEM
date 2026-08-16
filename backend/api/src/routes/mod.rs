@@ -5,7 +5,7 @@ use axum::{
 
 use crate::{
     handlers::{
-        attachment::{delete_attachment, get_attachments, upload_attachment},
+        attachment::{delete_attachment, download_attachment, get_attachments, upload_attachment},
         audit::{get_all_logs, get_user_logs},
         auth::{
             forgot_password, login, logout, refresh_token, register, reset_password, verify_email,
@@ -28,7 +28,14 @@ use crate::{
     },
     middleware::{
         auth::auth,
+        compression::compression_layer,
+        cors::cors_layer,
+        logging::logging_middleware,
+        rate_limit::body_limit_layer,
+        request_id::request_id_layers,
         role::{admin_only, agent_or_admin},
+        security_headers::security_headers,
+        timeout::timeout_layer,
     },
     state::AppState,
     websocket::handler::websocket_handler,
@@ -55,6 +62,10 @@ pub fn create_router(state: AppState) -> Router {
         .route("/tickets/{ticket_id}/attachments", post(upload_attachment))
         .route("/tickets/{ticket_id}/attachments", get(get_attachments))
         .route("/attachments/{attachment_id}", delete(delete_attachment))
+        .route(
+            "/attachments/{attachment_id}/download",
+            get(download_attachment),
+        )
         .route("/notifications", get(get_notifications))
         .route(
             "/notifications/{notification_id}/read",
@@ -117,14 +128,22 @@ pub fn create_router(state: AppState) -> Router {
         .route("/knowledge-base", get(get_all_articles))
         .route("/knowledge-base/{article_id}", get(get_article));
 
+    let (set_request_id, propagate_request_id) = request_id_layers();
+
     public
         .merge(protected)
         .merge(agent_routes)
         .merge(admin_routes)
         .merge(search::router())
         .with_state(state)
+        .layer(middleware::from_fn(logging_middleware))
+        .layer(set_request_id)
+        .layer(propagate_request_id)
+        .layer(cors_layer())
+        .layer(security_headers())
+        .layer(body_limit_layer())
+        .layer(timeout_layer())
+        .layer(compression_layer())
 }
 
 pub mod search;
-
-

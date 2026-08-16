@@ -24,9 +24,9 @@ pub async fn get_notifications(
 pub async fn mark_notification_read(
     Path(notification_id): Path<Uuid>,
     State(state): State<AppState>,
-    AuthenticatedUser(_): AuthenticatedUser,
+    AuthenticatedUser(user): AuthenticatedUser,
 ) -> Result<Json<NotificationResponse>, AppError> {
-    let notification = NotificationService::mark_as_read(&state.db, notification_id)
+    let notification = NotificationService::mark_as_read(&state.db, notification_id, user.id)
         .await
         .map_err(|e| AppError::NotFound(e.to_string()))?;
 
@@ -36,9 +36,9 @@ pub async fn mark_notification_read(
 pub async fn delete_notification(
     Path(notification_id): Path<Uuid>,
     State(state): State<AppState>,
-    AuthenticatedUser(_): AuthenticatedUser,
+    AuthenticatedUser(user): AuthenticatedUser,
 ) -> Result<StatusCode, AppError> {
-    NotificationService::delete(&state.db, notification_id)
+    NotificationService::delete(&state.db, notification_id, user.id)
         .await
         .map_err(|e| AppError::NotFound(e.to_string()))?;
 

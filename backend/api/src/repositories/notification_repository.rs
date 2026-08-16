@@ -58,8 +58,9 @@ impl NotificationRepository {
     pub async fn mark_as_read(
         pool: &PgPool,
         notification_id: Uuid,
+        user_id: Uuid,
     ) -> Result<Option<Notification>> {
-        info!(%notification_id, "Marking notification as read");
+        info!(%notification_id, %user_id, "Marking notification as read");
 
         let notification = sqlx::query_as::<_, Notification>(
             r#"
@@ -67,11 +68,14 @@ impl NotificationRepository {
             SET
                 is_read = TRUE,
                 updated_at = NOW()
-            WHERE id = $1
+            WHERE
+                id = $1
+                AND user_id = $2
             RETURNING *
             "#,
         )
         .bind(notification_id)
+        .bind(user_id)
         .fetch_optional(pool)
         .await?;
 
@@ -114,16 +118,19 @@ impl NotificationRepository {
         Ok(count)
     }
 
-    pub async fn delete(pool: &PgPool, notification_id: Uuid) -> Result<bool> {
-        info!(%notification_id, "Deleting notification");
+    pub async fn delete(pool: &PgPool, notification_id: Uuid, user_id: Uuid) -> Result<bool> {
+        info!(%notification_id, %user_id, "Deleting notification");
 
         let result = sqlx::query(
             r#"
             DELETE FROM notifications
-            WHERE id = $1
+            WHERE
+                id = $1
+                AND user_id = $2
             "#,
         )
         .bind(notification_id)
+        .bind(user_id)
         .execute(pool)
         .await?;
 

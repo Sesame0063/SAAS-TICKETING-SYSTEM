@@ -92,31 +92,38 @@ impl NotificationService {
         Ok(notifications)
     }
 
-    pub async fn mark_as_read(pool: &PgPool, notification_id: Uuid) -> Result<Notification> {
+    pub async fn mark_as_read(
+        pool: &PgPool,
+        notification_id: Uuid,
+        user_id: Uuid,
+    ) -> Result<Notification> {
         tracing::info!(
             notification_id = %notification_id,
+            user_id = %user_id,
             "Marking notification as read"
         );
 
-        let notification = NotificationRepository::mark_as_read(pool, notification_id)
+        let notification = NotificationRepository::mark_as_read(pool, notification_id, user_id)
             .await?
             .ok_or_else(|| anyhow!("Notification not found"))?;
 
         tracing::info!(
             notification_id = %notification.id,
+            user_id = %user_id,
             "Notification marked as read"
         );
 
         Ok(notification)
     }
 
-    pub async fn delete(pool: &PgPool, notification_id: Uuid) -> Result<()> {
+    pub async fn delete(pool: &PgPool, notification_id: Uuid, user_id: Uuid) -> Result<()> {
         tracing::info!(
             notification_id = %notification_id,
+            user_id = %user_id,
             "Deleting notification"
         );
 
-        let deleted = NotificationRepository::delete(pool, notification_id).await?;
+        let deleted = NotificationRepository::delete(pool, notification_id, user_id).await?;
 
         if !deleted {
             return Err(anyhow!("Notification not found"));
@@ -124,6 +131,7 @@ impl NotificationService {
 
         tracing::info!(
             notification_id = %notification_id,
+            user_id = %user_id,
             "Notification deleted successfully"
         );
 

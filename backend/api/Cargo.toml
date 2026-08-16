@@ -153,3 +153,7 @@ lto = true
 codegen-units = 1
 strip = true
 panic = "abort"
+
+[[bin]]
+name = "generate_password_hash"
+path = "src/bin/generate_password_hash.rs"

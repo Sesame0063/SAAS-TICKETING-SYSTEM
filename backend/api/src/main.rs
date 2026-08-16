@@ -61,11 +61,25 @@ async fn main() -> Result<()> {
         loop {
             timer.tick().await;
 
-            let _ = jobs::reminder_jobs::ReminderJobs::send_pending_ticket_reminders().await;
+            if let Err(error) = jobs::reminder_jobs::ReminderJobs::send_pending_ticket_reminders(
+                &scheduler_state.db,
+            )
+            .await
+            {
+                tracing::error!(
+                    error = %error,
+                    "Pending ticket reminder job failed"
+                );
+            }
 
-            let _ = jobs::reminder_jobs::ReminderJobs::send_sla_reminders().await;
-
-            let _ = scheduler_state;
+            if let Err(error) =
+                jobs::reminder_jobs::ReminderJobs::send_sla_reminders(&scheduler_state.db).await
+            {
+                tracing::error!(
+                    error = %error,
+                    "SLA reminder job failed"
+                );
+            }
         }
     });
 
