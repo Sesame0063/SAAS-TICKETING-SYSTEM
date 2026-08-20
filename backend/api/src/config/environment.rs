@@ -25,6 +25,7 @@ impl FromStr for Environment {
     }
 }
 
+#[allow(dead_code)]
 impl Environment {
     pub fn is_development(self) -> bool {
         matches!(self, Self::Development)

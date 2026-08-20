@@ -13,7 +13,7 @@ impl RedisService {
 
         let json = serde_json::to_string(value)?;
 
-        let _: () = conn.set_ex(key, json, ttl.try_into().unwrap()).await?;
+        let _: () = conn.set_ex(key, json, ttl).await?;
 
         Ok(())
     }

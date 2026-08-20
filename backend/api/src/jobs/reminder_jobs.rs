@@ -151,7 +151,7 @@ impl ReminderJobs {
             }
 
             println!(
-                "SLA violation processed: {} ({}) [{}]",
+                "SLA check completed: {} ({}) [{}]",
                 ticket_id, title, priority
             );
         }

@@ -8,6 +8,26 @@ use crate::entities::Notification;
 pub struct NotificationRepository;
 
 impl NotificationRepository {
+    pub async fn sla_notification_exists(
+        pool: &PgPool,
+        user_id: Uuid,
+        message: String,
+    ) -> Result<bool, sqlx::Error> {
+        let exists = sqlx::query_scalar::<_, i64>(
+            "SELECT COUNT(*) FROM notifications
+             WHERE user_id = impl NotificationRepository {
+             AND title = 'SLA violation'
+             AND message = $2
+             AND is_read = false",
+        )
+        .bind(user_id)
+        .bind(message)
+        .fetch_one(pool)
+        .await?;
+
+        Ok(exists > 0)
+    }
+
     pub async fn create(
         pool: &PgPool,
         user_id: Uuid,

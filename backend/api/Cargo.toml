@@ -33,8 +33,6 @@ tower-http = { version = "0.6", features = [
     "set-header",
     "limit"
 ] }
-
-# ==========================================================
 # Async Trait
 # ==========================================================
 
@@ -71,7 +69,6 @@ sqlx = { version = "0.8", features = [
     "chrono",
     "macros"
 ] }
-
 # ==========================================================
 # Redis
 # ==========================================================
@@ -108,7 +105,6 @@ uuid = { version = "1", features = [
     "v4",
     "serde"
 ] }
-
 # ==========================================================
 # Date & Time
 # ==========================================================
@@ -119,12 +115,7 @@ chrono = { version = "0.4", features = ["serde"] }
 # Email (SMTP)
 # ==========================================================
 
-lettre = { version = "0.11", default-features = false, features = [
-    "builder",
-    "smtp-transport",
-    "tokio1",
-    "tokio1-native-tls"
-] }
+lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "tokio1-rustls-tls"] }
 
 # ==========================================================
 # File Upload Helpers
@@ -157,3 +148,4 @@ panic = "abort"
 [[bin]]
 name = "generate_password_hash"
 path = "src/bin/generate_password_hash.rs"
+

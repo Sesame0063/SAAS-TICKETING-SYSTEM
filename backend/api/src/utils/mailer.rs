@@ -27,7 +27,7 @@ impl Mailer {
 
         let credentials = Credentials::new(username.to_string(), password.to_string());
 
-        let mailer = AsyncSmtpTransport::<Tokio1Executor>::relay(smtp_host)?
+        let mailer = AsyncSmtpTransport::<Tokio1Executor>::starttls_relay(smtp_host)?
             .credentials(credentials)
             .port(smtp_port)
             .build();
