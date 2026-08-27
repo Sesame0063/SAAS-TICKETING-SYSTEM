@@ -4,7 +4,7 @@ use argon2::{
 };
 
 fn main() {
-    let password = "Agent@123456";
+    let password = "xymypnamjqkiikk";
 
     let salt = SaltString::generate(&mut OsRng);
 

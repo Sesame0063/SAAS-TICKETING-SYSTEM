@@ -1,8 +1,8 @@
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, Query, State},
 };
-
+use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::{
@@ -13,6 +13,11 @@ use crate::{
     services::user_service::UserService,
     state::AppState,
 };
+
+#[derive(Deserialize)]
+pub struct UserQuery {
+    pub role: Option<String>,
+}
 
 pub async fn me(
     AuthenticatedUser(user): AuthenticatedUser,
@@ -30,15 +35,26 @@ pub async fn me(
     }))
 }
 
+pub async fn get_users(
+    State(state): State<AppState>,
+    Query(query): Query<UserQuery>,
+    AuthenticatedUser(user): AuthenticatedUser,
+) -> Result<Json<Vec<User>>, AppError> {
+    RoleGuard::agent_or_admin(&user)
+        .map_err(|_| AppError::Forbidden("Agent or Admin access required.".into()))?;
+
+    let users = UserService::get_users(&state.db, query.role).await?;
+
+    Ok(Json(users))
+}
+
 pub async fn update_role(
     Path(user_id): Path<Uuid>,
     State(state): State<AppState>,
     AuthenticatedUser(user): AuthenticatedUser,
     Json(payload): Json<UpdateUserRoleRequest>,
 ) -> Result<Json<User>, AppError> {
-    // Only admins may update roles
-    RoleGuard::admin(&user)
-        .map_err(|_| AppError::Forbidden("Admin access required.".to_string()))?;
+    RoleGuard::admin(&user).map_err(|_| AppError::Forbidden("Admin access required.".into()))?;
 
     let updated_user = UserService::update_role(&state.db, user_id, payload)
         .await

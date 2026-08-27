@@ -24,7 +24,7 @@ use crate::{
             get_ticket, search_my_tickets, update_ticket, update_ticket_status,
         },
         ticket_history::get_ticket_history,
-        user::{me, update_role},
+        user::{get_users, me, update_role},
     },
     middleware::{
         auth::auth,
@@ -76,8 +76,13 @@ pub fn create_router(state: AppState) -> Router {
             delete(delete_notification),
         )
         .route("/logout", post(logout))
-        .route("/ws", get(websocket_handler))
         .route_layer(middleware::from_fn_with_state(state.clone(), auth));
+
+    // ==========================================================
+    // WEBSOCKET ROUTES
+    // ==========================================================
+
+    let websocket_routes = Router::new().route("/ws", get(websocket_handler));
 
     // ==========================================================
     // AGENT + ADMIN ROUTES
@@ -100,13 +105,21 @@ pub fn create_router(state: AppState) -> Router {
     // ADMIN ONLY ROUTES
     // ==========================================================
 
-    let admin_routes = Router::new()
+    let report_routes = Router::new()
+        .route("/users", get(get_users))
         .route("/dashboard/summary", get(dashboard_summary))
         .route("/reports/dashboard", get(dashboard_report))
         .route("/reports/agents", get(agent_report))
         .route("/reports/customers", get(customer_report))
         .route("/reports/export/csv", get(export_csv))
         .route("/reports/export/pdf", get(export_pdf))
+        .route_layer(middleware::from_fn_with_state(
+            state.clone(),
+            agent_or_admin,
+        ))
+        .route_layer(middleware::from_fn_with_state(state.clone(), auth));
+
+    let admin_routes = Router::new()
         .route("/audit", get(get_all_logs))
         .route("/audit/{user_id}", get(get_user_logs))
         .route("/users/{user_id}/role", patch(update_role))
@@ -131,8 +144,10 @@ pub fn create_router(state: AppState) -> Router {
     let (set_request_id, propagate_request_id) = request_id_layers();
 
     public
+        .merge(websocket_routes)
         .merge(protected)
         .merge(agent_routes)
+        .merge(report_routes)
         .merge(admin_routes)
         .merge(search::router())
         .with_state(state)

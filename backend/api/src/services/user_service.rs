@@ -9,6 +9,10 @@ use crate::{
 pub struct UserService;
 
 impl UserService {
+    pub async fn get_users(pool: &PgPool, role: Option<String>) -> Result<Vec<User>> {
+        UserRepository::get_users(pool, role).await
+    }
+
     pub async fn update_role(
         pool: &PgPool,
         user_id: Uuid,

@@ -1,0 +1,19 @@
+let report_routes = Router::new()
+    .route("/dashboard/summary", get(dashboard_summary))
+    .route("/reports/dashboard", get(dashboard_report))
+    .route("/reports/agents", get(agent_report))
+    .route("/reports/customers", get(customer_report))
+    .route("/reports/export/csv", get(export_csv))
+    .route("/reports/export/pdf", get(export_pdf))
+    .route_layer(middleware::from_fn_with_state(
+        state.clone(),
+        agent_or_admin,
+    ))
+    .route_layer(middleware::from_fn_with_state(state.clone(), auth));
+
+let admin_routes = Router::new()
+    .route("/audit", get(get_all_logs))
+    .route("/audit/{user_id}", get(get_user_logs))
+    .route("/users/{user_id}/role", patch(update_role))
+    .route_layer(middleware::from_fn_with_state(state.clone(), admin_only))
+    .route_layer(middleware::from_fn_with_state(state.clone(), auth));

@@ -1,6 +1,6 @@
 use axum::{
     extract::{
-        State,
+        Query, State,
         ws::{Message, WebSocket, WebSocketUpgrade},
     },
     http::{HeaderMap, StatusCode, header::AUTHORIZATION},
@@ -8,9 +8,15 @@ use axum::{
 };
 
 use futures_util::{SinkExt, StreamExt};
+use serde::Deserialize;
 use tokio::sync::mpsc;
 use tracing::{debug, error, info, warn};
 use uuid::Uuid;
+
+#[derive(Deserialize)]
+pub struct WebSocketQuery {
+    pub token: Option<String>,
+}
 
 use crate::{
     state::AppState,
@@ -21,27 +27,26 @@ use crate::{
 pub async fn websocket_handler(
     ws: WebSocketUpgrade,
     headers: HeaderMap,
+    Query(query): Query<WebSocketQuery>,
     State(state): State<AppState>,
 ) -> Response {
     // =====================================================
     // Authorization Header
     // =====================================================
 
-    let authorization = match headers.get(AUTHORIZATION).and_then(|v| v.to_str().ok()) {
-        Some(value) => value,
-        None => return StatusCode::UNAUTHORIZED.into_response(),
-    };
-
-    let token = match authorization.strip_prefix("Bearer ") {
-        Some(token) => token,
-        None => return StatusCode::UNAUTHORIZED.into_response(),
+    let token = if let Some(token) = query.token {
+        token
+    } else if let Some(auth) = headers.get(AUTHORIZATION).and_then(|v| v.to_str().ok()) {
+        auth.strip_prefix("Bearer ").unwrap_or(auth).to_string()
+    } else {
+        return StatusCode::UNAUTHORIZED.into_response();
     };
 
     // =====================================================
     // Verify JWT
     // =====================================================
 
-    let claims = match Jwt::verify(token, &state.settings.jwt.secret) {
+    let claims = match Jwt::verify(&token, &state.settings.jwt.secret) {
         Ok(claims) => claims,
         Err(err) => {
             warn!(

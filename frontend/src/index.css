@@ -1,0 +1,27 @@
+@import "./styles/theme.css";
+
+html,body,#root{
+  height:100%;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:var(--background);
+  color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
+  overflow:hidden;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border-radius:999px;
+}

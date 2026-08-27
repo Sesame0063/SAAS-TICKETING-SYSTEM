@@ -1,6 +1,6 @@
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Extension, Path, State},
 };
 use uuid::Uuid;
 
@@ -8,6 +8,7 @@ use crate::{
     dto::knowledge_base::{
         CreateKnowledgeBaseRequest, KnowledgeBaseResponse, UpdateKnowledgeBaseRequest,
     },
+    entities::User,
     errors::AppError,
     response::ApiResponse,
     services::KnowledgeBaseService,
@@ -16,12 +17,13 @@ use crate::{
 
 pub async fn create(
     State(state): State<AppState>,
+    Extension(user): Extension<User>,
     Json(request): Json<CreateKnowledgeBaseRequest>,
 ) -> Result<Json<ApiResponse<KnowledgeBaseResponse>>, AppError> {
     // TODO:
-    // Replace Uuid::nil() with the authenticated user's ID
+    // Replace user.id with the authenticated user's ID
     // once JWT authentication is fully integrated.
-    let article = KnowledgeBaseService::create(&state.db, request, Uuid::nil()).await?;
+    let article = KnowledgeBaseService::create(&state.db, request, user.id).await?;
 
     Ok(Json(ApiResponse::success(article)))
 }

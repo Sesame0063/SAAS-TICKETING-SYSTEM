@@ -59,6 +59,34 @@ impl UserRepository {
         Ok(user)
     }
 
+    pub async fn get_users(pool: &PgPool, role: Option<String>) -> Result<Vec<User>> {
+        let users = if let Some(role) = role {
+            sqlx::query_as::<_, User>(
+                r#"
+                SELECT *
+                FROM users
+                WHERE LOWER(role) = LOWER($1)
+                ORDER BY created_at DESC
+                "#,
+            )
+            .bind(role)
+            .fetch_all(pool)
+            .await?
+        } else {
+            sqlx::query_as::<_, User>(
+                r#"
+                SELECT *
+                FROM users
+                ORDER BY created_at DESC
+                "#,
+            )
+            .fetch_all(pool)
+            .await?
+        };
+
+        Ok(users)
+    }
+
     pub async fn create(pool: &PgPool, user: &User) -> Result<User> {
         let created_user = sqlx::query_as!(
             User,
@@ -107,8 +135,7 @@ impl UserRepository {
         let user = sqlx::query_as::<_, User>(
             r#"
             UPDATE users
-            SET
-                role = $1,
+            SET role = $1,
                 updated_at = NOW()
             WHERE id = $2
             RETURNING *
@@ -126,8 +153,7 @@ impl UserRepository {
         let user = sqlx::query_as::<_, User>(
             r#"
             UPDATE users
-            SET
-                is_verified = TRUE,
+            SET is_verified = TRUE,
                 updated_at = NOW()
             WHERE id = $1
             RETURNING *
@@ -148,8 +174,7 @@ impl UserRepository {
         let user = sqlx::query_as::<_, User>(
             r#"
             UPDATE users
-            SET
-                password_hash = $1,
+            SET password_hash = $1,
                 updated_at = NOW()
             WHERE id = $2
             RETURNING *
