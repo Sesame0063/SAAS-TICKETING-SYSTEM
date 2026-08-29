@@ -1,23 +1,36 @@
-import { useEffect, useState } from "react";
-import type { Profile } from "../api/profileApi";
-import { getProfile } from "../api/profileApi";
+﻿import { useEffect, useState } from "react";
+import { getProfile, type Profile } from "../api/profileApi";
 
-export default function useProfile() {
+export function useProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  async function refresh() {
+  async function refreshProfile() {
     try {
+      setLoading(true);
+      setError("");
+
       const data = await getProfile();
+      console.log("PROFILE API RESPONSE:", JSON.stringify(data, null, 2));
       setProfile(data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to load profile.");
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    refresh();
+    refreshProfile();
   }, []);
 
-  return { profile, loading, refresh };
+  return {
+    profile,
+    loading,
+    error,
+    refreshProfile,
+  };
 }
+
+

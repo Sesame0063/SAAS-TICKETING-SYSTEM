@@ -53,8 +53,8 @@ export function useReports() {
       ]);
 
       setSummary(summaryData);
-      setStatusDistribution(dashboardData.status_distribution ?? dashboardData.status ?? []);
-      setPriorityDistribution(dashboardData.priority_distribution ?? dashboardData.priority ?? []);
+      setStatusDistribution(dashboardData.status_distribution ?? []);
+      setPriorityDistribution(dashboardData.priority_distribution ?? []);
       setAgentReport(agentData);
       setCustomerReport(customerData);
 
@@ -116,5 +116,6 @@ export function useReports() {
     downloadPdf,
   };
 }
+
 
 

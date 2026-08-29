@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Send, Trash2 } from "lucide-react";
 
 import useComments from "../../hooks/useComments";
-import useWebSocket from "../../hooks/useWebSocket";
 
 interface Props {
   ticketId: string;
@@ -112,5 +111,6 @@ export default function CommentBox({ ticketId }: Props) {
     </div>
   );
 }
+
 
 

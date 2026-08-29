@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+﻿import { Navigate, Route, Routes } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -22,8 +22,7 @@ import AgentQueuePage from "../pages/agent/AgentQueuePage";
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
 
         {/* Default */}
         <Route path="/" element={<Navigate to="/login" replace />} />
@@ -126,6 +125,6 @@ export default function AppRouter() {
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
 
       </Routes>
-    </BrowserRouter>
   );
 }
+

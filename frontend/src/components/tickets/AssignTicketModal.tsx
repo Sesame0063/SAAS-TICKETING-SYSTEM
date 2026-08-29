@@ -3,6 +3,7 @@ import { X, UserPlus } from "lucide-react";
 
 import { getAgents } from "../../api/userApi";
 import { assignTicket } from "../../api/ticketDetailsApi";
+import type { User } from "../../types/user";
 
 interface Props {
   ticketId: string;
@@ -11,20 +12,13 @@ interface Props {
   onAssigned: () => void;
 }
 
-interface Agent {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
-
 export default function AssignTicketModal({
   ticketId,
   open,
   onClose,
   onAssigned,
 }: Props) {
-  const [agents, setAgents] = useState<Agent[]>([]);
+  const [agents, setAgents] = useState<User[]>([]);
   const [selectedAgent, setSelectedAgent] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -80,14 +74,14 @@ export default function AssignTicketModal({
 
           {agents.map((agent) => (
             <option key={agent.id} value={agent.id}>
-              {agent.first_name} {agent.last_name}
+              {agent.name} ({agent.email})
             </option>
           ))}
         </select>
 
         <button
           onClick={handleAssign}
-          disabled={loading}
+          disabled={loading || !selectedAgent}
           className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-white hover:bg-blue-700 disabled:bg-slate-400"
         >
           <UserPlus size={18} />

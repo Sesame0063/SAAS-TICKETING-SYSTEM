@@ -5,8 +5,8 @@ import {
   updateArticle,
   deleteArticle,
   type KnowledgeArticle,
-  type CreateArticleRequest,
-} from "../api/knowledgeBaseApi";
+  type KnowledgeArticlePayload,
+  } from "../api/knowledgeBaseApi";
 
 export default function useKnowledgeBase() {
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
@@ -25,14 +25,14 @@ export default function useKnowledgeBase() {
     refresh();
   }, []);
 
-  async function create(payload: CreateArticleRequest) {
+  async function create(payload: KnowledgeArticlePayload) {
     await createArticle(payload);
     await refresh();
   }
 
   async function update(
     id: string,
-    payload: CreateArticleRequest
+    payload: KnowledgeArticlePayload
   ) {
     await updateArticle(id, payload);
     await refresh();
@@ -52,3 +52,8 @@ export default function useKnowledgeBase() {
     remove,
   };
 }
+
+
+
+
+

@@ -1,11 +1,5 @@
-﻿import { useEffect, useMemo, useState } from "react";
-import {
-  Search,
-  UserPlus,
-  RefreshCw,
-  ArrowUpDown,
-  Filter,
-} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Search, UserPlus } from "lucide-react";
 
 import DashboardLayout from "../../layouts/DashboardLayout";
 import Card from "../../components/common/Card";
@@ -16,17 +10,10 @@ import { getTickets, type Ticket } from "../../api/ticketApi";
 import CreateTicketModal from "../../components/forms/CreateTicketModal";
 import AssignTicketModal from "../../components/forms/AssignTicketModal";
 
-const PAGE_SIZE = 10;
-
 export default function TicketsPage() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [search, setSearch] = useState("");
-
   const [statusFilter, setStatusFilter] = useState("All");
-  const [priorityFilter, setPriorityFilter] = useState("All");
-  const [sortBy, setSortBy] = useState("Newest");
-
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -49,9 +36,7 @@ export default function TicketsPage() {
   }, []);
 
   const filteredTickets = useMemo(() => {
-    let result = [...tickets];
-
-    result = result.filter((ticket) => {
+    return tickets.filter((ticket) => {
       const matchesSearch =
         ticket.title.toLowerCase().includes(search.toLowerCase()) ||
         ticket.description.toLowerCase().includes(search.toLowerCase());
@@ -59,59 +44,9 @@ export default function TicketsPage() {
       const matchesStatus =
         statusFilter === "All" || ticket.status === statusFilter;
 
-      const matchesPriority =
-        priorityFilter === "All" || ticket.priority === priorityFilter;
-
-      return matchesSearch && matchesStatus && matchesPriority;
+      return matchesSearch && matchesStatus;
     });
-
-    switch (sortBy) {
-      case "Oldest":
-        result.sort(
-          (a, b) =>
-            new Date(a.created_at).getTime() -
-            new Date(b.created_at).getTime()
-        );
-        break;
-
-      case "Priority":
-        const order = {
-          HIGH: 1,
-          MEDIUM: 2,
-          LOW: 3,
-        };
-
-        result.sort(
-          (a, b) =>
-            (order[a.priority as keyof typeof order] ?? 99) -
-            (order[b.priority as keyof typeof order] ?? 99)
-        );
-        break;
-
-      default:
-        result.sort(
-          (a, b) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime()
-        );
-    }
-
-    return result;
-  }, [tickets, search, statusFilter, priorityFilter, sortBy]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [search, statusFilter, priorityFilter, sortBy]);
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredTickets.length / PAGE_SIZE)
-  );
-
-  const paginatedTickets = filteredTickets.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
+  }, [tickets, search, statusFilter]);
 
   function handleAssign(ticketId: string) {
     setSelectedTicketId(ticketId);
@@ -120,7 +55,9 @@ export default function TicketsPage() {
 
   return (
     <DashboardLayout>
+
       <div className="mb-8 flex items-center justify-between">
+
         <div>
           <h1 className="text-4xl font-bold text-slate-900">
             Tickets
@@ -137,11 +74,15 @@ export default function TicketsPage() {
         >
           + New Ticket
         </button>
+
       </div>
 
       <Card>
-        <div className="mb-6 flex flex-wrap gap-4">
-          <div className="relative flex-1 min-w-[260px]">
+
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+
+          <div className="relative w-full md:w-96">
+
             <Search
               size={18}
               className="absolute left-3 top-3.5 text-slate-400"
@@ -153,6 +94,7 @@ export default function TicketsPage() {
               placeholder="Search tickets..."
               className="w-full rounded-xl border bg-slate-50 py-3 pl-10 pr-4"
             />
+
           </div>
 
           <select
@@ -161,55 +103,13 @@ export default function TicketsPage() {
             className="rounded-xl border bg-slate-50 px-4 py-3"
           >
             <option>All</option>
-            <option>OPEN</option>
-            <option>PENDING</option>
-            <option>IN_PROGRESS</option>
-            <option>RESOLVED</option>
-            <option>CLOSED</option>
+            <option>Open</option>
+            <option>Pending</option>
+            <option>In Progress</option>
+            <option>Resolved</option>
+            <option>Closed</option>
           </select>
 
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-            className="rounded-xl border bg-slate-50 px-4 py-3"
-          >
-            <option>All</option>
-            <option>HIGH</option>
-            <option>MEDIUM</option>
-            <option>LOW</option>
-          </select>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-xl border bg-slate-50 px-4 py-3"
-          >
-            <option>Newest</option>
-            <option>Oldest</option>
-            <option>Priority</option>
-          </select>
-
-          <button
-            onClick={loadTickets}
-            className="flex items-center gap-2 rounded-xl border px-4 py-3 hover:bg-slate-100"
-          >
-            <RefreshCw size={18} />
-            Refresh
-          </button>
-        </div>
-
-        <div className="mb-4 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-          <div className="flex items-center gap-2 text-slate-600">
-            <Filter size={18} />
-            Showing
-            <strong>{filteredTickets.length}</strong>
-            tickets.
-          </div>
-
-          <div className="flex items-center gap-2 text-slate-600">
-            <ArrowUpDown size={18} />
-            {sortBy}
-          </div>
         </div>
 
         {loading ? (
@@ -222,42 +122,24 @@ export default function TicketsPage() {
           </div>
         ) : (
           <div className="space-y-5">
-            <TicketTable tickets={paginatedTickets} />
 
-            <div className="flex items-center justify-between rounded-xl border p-4">
-              <button
-                disabled={page === 1}
-                onClick={() => setPage((p) => p - 1)}
-                className="rounded-lg border px-4 py-2 disabled:opacity-40"
-              >
-                Previous
-              </button>
-
-              <span className="font-medium text-slate-600">
-                Page {page} of {totalPages}
-              </span>
-
-              <button
-                disabled={page === totalPages}
-                onClick={() => setPage((p) => p + 1)}
-                className="rounded-lg border px-4 py-2 disabled:opacity-40"
-              >
-                Next
-              </button>
-            </div>
+            <TicketTable tickets={filteredTickets} />
 
             {(role === "ADMIN" || role === "AGENT") && (
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+
                 <h3 className="mb-4 text-lg font-semibold text-slate-700">
                   Quick Ticket Assignment
                 </h3>
 
                 <div className="space-y-3">
-                  {paginatedTickets.map((ticket) => (
+
+                  {filteredTickets.map((ticket) => (
                     <div
                       key={ticket.id}
                       className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm"
                     >
+
                       <div>
                         <p className="font-medium text-slate-800">
                           {ticket.title}
@@ -275,13 +157,18 @@ export default function TicketsPage() {
                         <UserPlus size={16} />
                         Assign
                       </button>
+
                     </div>
                   ))}
+
                 </div>
+
               </div>
             )}
+
           </div>
         )}
+
       </Card>
 
       <CreateTicketModal
@@ -294,8 +181,11 @@ export default function TicketsPage() {
         open={openAssignModal}
         ticketId={selectedTicketId}
         onClose={() => setOpenAssignModal(false)}
-        onAssigned={loadTickets}
+        onAssigned={() => {
+          loadTickets();
+        }}
       />
+
     </DashboardLayout>
   );
 }

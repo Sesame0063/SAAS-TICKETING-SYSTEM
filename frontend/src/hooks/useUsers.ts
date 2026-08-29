@@ -36,8 +36,8 @@ export function useUsers(initialParams?: UserQueryParams) {
         return;
       }
 
-      const response = await searchUsers(query);
-      setUsers(response.users);
+      const users = await searchUsers(query);
+      setUsers(users);
     } catch (err: any) {
       setError(err.response?.data?.message || "Search failed.");
     } finally {
@@ -47,7 +47,7 @@ export function useUsers(initialParams?: UserQueryParams) {
 
   async function updateRole(userId: string, role: UserRole) {
     try {
-      await updateUserRole(userId, { role });
+      await updateUserRole(userId, role);
 
       setUsers((current) =>
         current.map((user) =>
@@ -67,7 +67,7 @@ export function useUsers(initialParams?: UserQueryParams) {
       setUsers((current) =>
         current.map((user) =>
           user.id === userId
-            ? { ...user, status: "INACTIVE" }
+            ? { ...user, is_active: false }
             : user
         )
       );
@@ -91,4 +91,8 @@ export function useUsers(initialParams?: UserQueryParams) {
     deactivate,
   };
 }
+
+
+
+
 

@@ -94,7 +94,7 @@ export default function AssignTicketModal({
 
             {users.map((agent) => (
               <option key={agent.id} value={agent.id}>
-                {agent.first_name} {agent.last_name} ({agent.email})
+                {agent.name} ({agent.email})
               </option>
             ))}
           </select>
@@ -118,7 +118,7 @@ export default function AssignTicketModal({
                   >
                     <div>
                       <p className="font-medium text-slate-700">
-                        {agent.first_name} {agent.last_name}
+                        {agent.name}
                       </p>
 
                       <p className="text-xs text-slate-500">
@@ -157,3 +157,4 @@ export default function AssignTicketModal({
     </div>
   );
 }
+

@@ -1,183 +1,129 @@
 import DashboardLayout from "../../layouts/DashboardLayout";
-import useProfile from "../../hooks/useProfile";
-import {
-  UserCircle,
-  ShieldCheck,
-  Mail,
-  CalendarDays,
-  BadgeCheck,
-} from "lucide-react";
+import { Mail, ShieldCheck, UserCircle, Calendar } from "lucide-react";
+import { useProfile } from "../../hooks/useProfile";
 
 export default function SettingsPage() {
-  const { profile, loading } = useProfile();
+  const { profile, loading, error, refreshProfile } = useProfile();
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="rounded-3xl bg-white p-10 text-center shadow-md">
+          Loading profile...
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <DashboardLayout>
+        <div className="space-y-4 rounded-3xl bg-white p-10 shadow-md">
+          <h2 className="text-xl font-bold text-red-600">
+            Failed to load profile.
+          </h2>
+
+          <button
+            onClick={refreshProfile}
+            className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          >
+            Retry
+          </button>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      {loading || !profile ? (
-        <div className="rounded-2xl bg-white p-8 text-center shadow">
-          Loading profile...
+      <div className="space-y-8">
+
+        <div>
+          <h1 className="text-3xl font-bold text-slate-800">
+            My Profile
+          </h1>
+
+          <p className="mt-2 text-slate-500">
+  Your account information from the backend.
+</p>
+
+        {error && (
+          <div className="mt-4 rounded-xl bg-yellow-100 p-3 text-yellow-700">
+            {error}
+          </div>
+        )}
         </div>
-      ) : (
-        <div className="space-y-8">
 
-          <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white shadow-lg">
+        <div className="rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white shadow-lg">
+          <div className="flex items-center gap-6">
 
-            <div className="flex items-center gap-5">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white text-blue-700">
+              <UserCircle size={64}/>
+            </div>
 
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white text-3xl font-bold text-blue-600">
-                {profile.first_name.charAt(0)}
-                {profile.last_name.charAt(0)}
-              </div>
+            <div>
+              <h2 className="text-3xl font-bold">
+                {profile.first_name} {profile.last_name}
+              </h2>
 
-              <div>
-                <h1 className="text-3xl font-bold">
-                  {profile.first_name} {profile.last_name}
-                </h1>
-
-                <p className="mt-2 text-blue-100">
-                  {profile.email}
-                </p>
-              </div>
-
+              <p className="mt-2 text-blue-100 uppercase tracking-wide">
+                {profile.role}
+              </p>
             </div>
 
           </div>
+        </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
 
-            <div className="rounded-2xl bg-white p-6 shadow">
+          <InfoCard
+            icon={<Mail size={22}/>}
+            title="Email Address"
+            value={profile.email}
+          />
 
-              <div className="mb-4 flex items-center gap-3">
-                <UserCircle className="text-blue-600" />
-                <h2 className="text-xl font-semibold">
-                  Account Details
-                </h2>
-              </div>
+          <InfoCard
+            icon={<ShieldCheck size={22}/>}
+            title="Verification Status"
+            value={profile.is_verified ? "Verified" : "Not Verified"}
+          />
 
-              <div className="space-y-4 text-slate-600">
+          <InfoCard
+            icon={<UserCircle size={22}/>}
+            title="Account Status"
+            value={profile.is_active ? "Active" : "Inactive"}
+          />
 
-                <div className="flex justify-between">
-                  <span>Name</span>
-                  <span className="font-medium text-slate-800">
-                    {profile.first_name} {profile.last_name}
-                  </span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span>Email</span>
-                  <span className="font-medium text-slate-800">
-                    {profile.email}
-                  </span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span>Role</span>
-
-                  <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-700">
-                    {profile.role.toUpperCase()}
-                  </span>
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="rounded-2xl bg-white p-6 shadow">
-
-              <div className="mb-4 flex items-center gap-3">
-                <ShieldCheck className="text-green-600" />
-                <h2 className="text-xl font-semibold">
-                  Account Status
-                </h2>
-              </div>
-
-              <div className="space-y-4 text-slate-600">
-
-                <div className="flex justify-between">
-                  <span>Verified</span>
-
-                  <span className={profile.is_verified
-                    ? "text-green-600 font-semibold"
-                    : "text-red-600 font-semibold"}>
-                    {profile.is_verified ? "YES" : "NO"}
-                  </span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span>Active</span>
-
-                  <span className={profile.is_active
-                    ? "text-green-600 font-semibold"
-                    : "text-red-600 font-semibold"}>
-                    {profile.is_active ? "ACTIVE" : "INACTIVE"}
-                  </span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div className="rounded-2xl bg-white p-6 shadow">
-
-            <h2 className="mb-5 text-xl font-semibold">
-              Account Timeline
-            </h2>
-
-            <div className="space-y-5">
-
-              <div className="flex items-center gap-4">
-                <CalendarDays className="text-blue-600" />
-
-                <div>
-                  <p className="font-medium">
-                    Joined
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    {new Date(profile.created_at).toLocaleString()}
-                  </p>
-                </div>
-
-              </div>
-
-              <div className="flex items-center gap-4">
-                <Mail className="text-purple-600" />
-
-                <div>
-                  <p className="font-medium">
-                    Email Address
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    {profile.email}
-                  </p>
-                </div>
-
-              </div>
-
-              <div className="flex items-center gap-4">
-                <BadgeCheck className="text-green-600" />
-
-                <div>
-                  <p className="font-medium">
-                    Last Updated
-                  </p>
-
-                  <p className="text-sm text-slate-500">
-                    {new Date(profile.updated_at).toLocaleString()}
-                  </p>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
+          <InfoCard
+            icon={<Calendar size={22}/>}
+            title="Member Since"
+            value={new Date(profile.created_at).toLocaleDateString()}
+          />
 
         </div>
-      )}
+
+      </div>
     </DashboardLayout>
+  );
+}
+
+interface InfoCardProps {
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+}
+
+function InfoCard({ icon, title, value }: InfoCardProps) {
+  return (
+    <div className="rounded-2xl bg-white p-6 shadow-md">
+      <div className="mb-4 flex items-center gap-3 text-blue-600">
+        {icon}
+        <p className="font-medium">{title}</p>
+      </div>
+
+      <h3 className="text-lg font-semibold text-slate-800">
+        {value}
+      </h3>
+    </div>
   );
 }

@@ -6,6 +6,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  first_name: string;
+  last_name: string;
+  is_verified: boolean;
+  is_active: boolean;
   role: UserRole;
   status: UserStatus;
   email_verified: boolean;

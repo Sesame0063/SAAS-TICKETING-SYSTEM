@@ -1,5 +1,11 @@
 import api from "./axios";
 
+export interface KnowledgeArticlePayload {
+  title: string;
+  content: string;
+  category: string;
+}
+
 export interface KnowledgeArticle {
   id: string;
   title: string;
@@ -38,3 +44,5 @@ export async function updateArticle(
 export async function deleteArticle(id: string): Promise<void> {
   await api.delete(`/knowledge-base/${id}`);
 }
+
+
