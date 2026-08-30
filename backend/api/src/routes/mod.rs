@@ -17,14 +17,17 @@ use crate::{
             create as create_article, delete as delete_article, get_all as get_all_articles,
             get_by_id as get_article, update as update_article,
         },
-        notification::{delete_notification, get_notifications, mark_notification_read},
+        notification::{
+            delete_notification, get_notifications, mark_all_notifications_read,
+            mark_notification_read,
+        },
         report::{agent_report, customer_report, dashboard_report, export_csv, export_pdf},
         ticket::{
             assign_ticket, create_ticket, delete_ticket, get_all_tickets, get_my_tickets,
             get_ticket, search_my_tickets, update_ticket, update_ticket_status,
         },
         ticket_history::get_ticket_history,
-        user::{get_users, me, update_role},
+        user::{change_password, get_users, me, update_profile, update_role},
     },
     middleware::{
         auth::auth,
@@ -47,7 +50,8 @@ pub fn create_router(state: AppState) -> Router {
     // ==========================================================
 
     let protected = Router::new()
-        .route("/me", get(me))
+        .route("/me", get(me).put(update_profile))
+        .route("/me/password", put(change_password))
         .route("/tickets", post(create_ticket))
         .route("/tickets", get(get_my_tickets))
         .route("/tickets/search", get(search_my_tickets))
@@ -67,6 +71,10 @@ pub fn create_router(state: AppState) -> Router {
             get(download_attachment),
         )
         .route("/notifications", get(get_notifications))
+        .route(
+            "/notifications/read-all",
+            patch(mark_all_notifications_read),
+        )
         .route(
             "/notifications/{notification_id}/read",
             patch(mark_notification_read),
@@ -143,13 +151,17 @@ pub fn create_router(state: AppState) -> Router {
 
     let (set_request_id, propagate_request_id) = request_id_layers();
 
-    public
-        .merge(websocket_routes)
-        .merge(protected)
-        .merge(agent_routes)
-        .merge(report_routes)
-        .merge(admin_routes)
-        .merge(search::router())
+    Router::new()
+        .nest(
+            "/api/v1",
+            public
+                .merge(websocket_routes)
+                .merge(protected)
+                .merge(agent_routes)
+                .merge(report_routes)
+                .merge(admin_routes)
+                .merge(search::router()),
+        )
         .with_state(state)
         .layer(middleware::from_fn(logging_middleware))
         .layer(set_request_id)

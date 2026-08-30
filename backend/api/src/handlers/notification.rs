@@ -44,3 +44,14 @@ pub async fn delete_notification(
 
     Ok(StatusCode::NO_CONTENT)
 }
+
+pub async fn mark_all_notifications_read(
+    State(state): State<AppState>,
+    AuthenticatedUser(user): AuthenticatedUser,
+) -> Result<StatusCode, AppError> {
+    NotificationService::mark_all_notifications_read(&state.db, user.id)
+        .await
+        .map_err(|e| AppError::BadRequest(e.to_string()))?;
+
+    Ok(StatusCode::OK)
+}

@@ -6,7 +6,9 @@ use serde::Deserialize;
 use uuid::Uuid;
 
 use crate::{
-    dto::user::{UpdateUserRoleRequest, UserResponseDto},
+    dto::user::{
+        ChangePasswordRequest, UpdateProfileRequest, UpdateUserRoleRequest, UserResponseDto,
+    },
     entities::User,
     errors::AppError,
     extractors::{auth::AuthenticatedUser, role_guard::RoleGuard},
@@ -19,6 +21,9 @@ pub struct UserQuery {
     pub role: Option<String>,
 }
 
+// ==========================================================
+// GET /me
+// ==========================================================
 pub async fn me(
     AuthenticatedUser(user): AuthenticatedUser,
 ) -> Result<Json<UserResponseDto>, AppError> {
@@ -35,6 +40,49 @@ pub async fn me(
     }))
 }
 
+// ==========================================================
+// PUT /me
+// ==========================================================
+pub async fn update_profile(
+    State(state): State<AppState>,
+    AuthenticatedUser(user): AuthenticatedUser,
+    Json(payload): Json<UpdateProfileRequest>,
+) -> Result<Json<UserResponseDto>, AppError> {
+    let updated = UserService::update_profile(&state.db, user.id, payload).await?;
+
+    Ok(Json(UserResponseDto {
+        id: updated.id,
+        first_name: updated.first_name,
+        last_name: updated.last_name,
+        email: updated.email,
+        role: updated.role,
+        is_active: updated.is_active,
+        is_verified: updated.is_verified,
+        created_at: updated.created_at,
+        updated_at: updated.updated_at,
+    }))
+}
+
+// ==========================================================
+// PUT /me/password
+// ==========================================================
+pub async fn change_password(
+    State(state): State<AppState>,
+    AuthenticatedUser(user): AuthenticatedUser,
+    Json(payload): Json<ChangePasswordRequest>,
+) -> Result<Json<serde_json::Value>, AppError> {
+    if let Err(err) = UserService::change_password(&state.db, user.id, payload).await {
+        return Err(AppError::Unauthorized(err.to_string()));
+    }
+
+    Ok(Json(serde_json::json!({
+        "message": "Password changed successfully."
+    })))
+}
+
+// ==========================================================
+// GET /users
+// ==========================================================
 pub async fn get_users(
     State(state): State<AppState>,
     Query(query): Query<UserQuery>,
@@ -48,6 +96,9 @@ pub async fn get_users(
     Ok(Json(users))
 }
 
+// ==========================================================
+// PATCH /users/{id}/role
+// ==========================================================
 pub async fn update_role(
     Path(user_id): Path<Uuid>,
     State(state): State<AppState>,

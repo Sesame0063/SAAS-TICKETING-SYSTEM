@@ -7,6 +7,7 @@ use uuid::Uuid;
 pub struct KnowledgeBase {
     pub id: Uuid,
     pub title: String,
+    pub category: String,
     pub content: String,
     pub created_by: Uuid,
     pub created_at: DateTime<Utc>,

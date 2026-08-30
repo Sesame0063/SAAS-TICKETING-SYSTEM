@@ -18,12 +18,13 @@ impl KnowledgeBaseRepository {
         let article = sqlx::query_as::<_, KnowledgeBase>(
             r#"
             INSERT INTO knowledge_base
-            (title, content, created_by)
-            VALUES ($1, $2, $3)
+            (title, category, content, created_by)
+            VALUES ($1, $2, $3, $4)
             RETURNING *
             "#,
         )
         .bind(request.title)
+        .bind(request.category)
         .bind(request.content)
         .bind(created_by)
         .fetch_one(pool)
@@ -71,13 +72,15 @@ impl KnowledgeBaseRepository {
             UPDATE knowledge_base
             SET
                 title = $1,
-                content = $2,
+                category = $2,
+                content = $3,
                 updated_at = NOW()
-            WHERE id = $3
+            WHERE id = $4
             RETURNING *
             "#,
         )
         .bind(request.title)
+        .bind(request.category)
         .bind(request.content)
         .bind(article_id)
         .fetch_optional(pool)

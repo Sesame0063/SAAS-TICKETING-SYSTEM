@@ -1,4 +1,4 @@
-use axum::{
+﻿use axum::{
     routing::{delete, get, patch, post, put},
     Router,
 };
@@ -31,6 +31,7 @@ use crate::{
             delete_notification,
             get_notifications,
             mark_notification_read,
+            mark_all_notifications_read,
         },
         report::{
             agent_report,
@@ -50,7 +51,7 @@ use crate::{
             update_ticket_status,
         },
         ticket_history::get_ticket_history,
-        user::me,
+        user::{me, update_profile, change_password},
     },
     routes::audit,
     state::AppState,
@@ -78,7 +79,8 @@ pub fn routes() -> Router<AppState> {
         // ==========================================================
         // Current User
         // ==========================================================
-        .route("/me", get(me))
+        .route("/me", get(me).put(update_profile))
+        .route("/me/password", put(change_password))
 
         // ==========================================================
         // Customer Tickets
@@ -151,6 +153,10 @@ pub fn routes() -> Router<AppState> {
             get(get_notifications),
         )
         .route(
+            "/notifications/read-all",
+            patch(mark_all_notifications_read),
+        )
+        .route(
             "/notifications/{notification_id}/read",
             patch(mark_notification_read),
         )
@@ -173,3 +179,6 @@ pub fn routes() -> Router<AppState> {
         // ==========================================================
         .nest("", audit::routes())
 }
+
+
+

@@ -137,4 +137,19 @@ impl NotificationService {
 
         Ok(())
     }
+    pub async fn mark_all_notifications_read(
+        pool: &sqlx::PgPool,
+        user_id: uuid::Uuid,
+    ) -> Result<(), sqlx::Error> {
+        sqlx::query(
+            "UPDATE notifications
+             SET is_read = TRUE
+             WHERE user_id = $1 AND is_read = FALSE",
+        )
+        .bind(user_id)
+        .execute(pool)
+        .await?;
+
+        Ok(())
+    }
 }

@@ -44,3 +44,31 @@ pub struct UserResponseDto {
 pub struct UpdateUserRoleRequest {
     pub role: String,
 }
+
+// ==========================================================
+// Settings Page DTOs
+// ==========================================================
+
+#[derive(Debug, Serialize, Deserialize, Validate)]
+pub struct UpdateProfileRequest {
+    #[validate(length(min = 2, max = 100))]
+    pub first_name: String,
+
+    #[validate(length(min = 2, max = 100))]
+    pub last_name: String,
+
+    #[validate(length(min = 10, max = 15))]
+    pub phone: Option<String>,
+
+    #[validate(length(min = 2, max = 100))]
+    pub department: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Validate)]
+pub struct ChangePasswordRequest {
+    #[validate(length(min = 8))]
+    pub current_password: String,
+
+    #[validate(length(min = 8))]
+    pub new_password: String,
+}

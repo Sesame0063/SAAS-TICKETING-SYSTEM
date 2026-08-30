@@ -22,6 +22,7 @@ impl KnowledgeBaseService {
         Ok(KnowledgeBaseResponse {
             id: article.id,
             title: article.title,
+            category: article.category,
             content: article.content,
             created_by: article.created_by,
             created_at: article.created_at,
@@ -37,6 +38,7 @@ impl KnowledgeBaseService {
             .map(|article| KnowledgeBaseResponse {
                 id: article.id,
                 title: article.title,
+                category: article.category,
                 content: article.content,
                 created_by: article.created_by,
                 created_at: article.created_at,
@@ -53,6 +55,7 @@ impl KnowledgeBaseService {
         Ok(KnowledgeBaseResponse {
             id: article.id,
             title: article.title,
+            category: article.category,
             content: article.content,
             created_by: article.created_by,
             created_at: article.created_at,
@@ -72,6 +75,7 @@ impl KnowledgeBaseService {
         Ok(KnowledgeBaseResponse {
             id: article.id,
             title: article.title,
+            category: article.category,
             content: article.content,
             created_by: article.created_by,
             created_at: article.created_at,
