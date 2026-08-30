@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 import type { User, UserQueryParams, UserRole } from "../types/user";
 
 export async function getUsers(
@@ -36,3 +36,4 @@ export async function deactivateUser(userId: string): Promise<User> {
   const { data } = await api.patch(`/users/${userId}/deactivate`);
   return data;
 }
+

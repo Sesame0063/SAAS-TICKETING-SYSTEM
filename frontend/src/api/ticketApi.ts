@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 
 export interface Ticket {
   id: string;
@@ -45,3 +45,4 @@ export async function getTickets(): Promise<Ticket[]> {
   const { data } = await api.get("/tickets");
   return data;
 }
+

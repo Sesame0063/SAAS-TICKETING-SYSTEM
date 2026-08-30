@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { X, UserPlus } from "lucide-react";
 
-import { getAgents } from "../../api/userApi";
 import { assignTicket } from "../../api/ticketDetailsApi";
+import { getAgents } from "../../api/userApi";
 import type { User } from "../../types/user";
+import { errorToast, successToast } from "../../utils/toast";
 
 interface Props {
   ticketId: string;
@@ -27,11 +28,17 @@ export default function AssignTicketModal({
 
     getAgents()
       .then(setAgents)
-      .catch(console.error);
+      .catch((err) => {
+        console.error(err);
+        errorToast("Failed to load agents.");
+      });
   }, [open]);
 
   async function handleAssign() {
-    if (!selectedAgent) return;
+    if (!selectedAgent) {
+      errorToast("Please select an agent.");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -40,11 +47,19 @@ export default function AssignTicketModal({
         agent_id: selectedAgent,
       });
 
+      successToast("Ticket assigned successfully!");
+
       onAssigned();
       onClose();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to assign ticket.");
+      setSelectedAgent("");
+    } catch (err: any) {
+      console.error("Assign Ticket Error:", err.response?.data);
+
+      errorToast(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Failed to assign ticket."
+      );
     } finally {
       setLoading(false);
     }
@@ -53,22 +68,28 @@ export default function AssignTicketModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+      <div className="w-full max-w-md rounded-3xl border border-cyan-500/20 bg-[#020817] p-6 text-white shadow-2xl shadow-cyan-900/30">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Assign Ticket</h2>
 
-          <button onClick={onClose}>
-            <X />
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+          >
+            <X size={22} />
           </button>
         </div>
 
-        <p className="mb-3 text-slate-600">Choose an agent.</p>
+        <p className="mb-3 text-slate-400">
+          Choose a support agent to assign this ticket.
+        </p>
 
         <select
           value={selectedAgent}
           onChange={(e) => setSelectedAgent(e.target.value)}
-          className="w-full rounded-xl border p-3"
+          className="w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-white outline-none focus:border-cyan-500"
         >
           <option value="">Select Agent</option>
 
@@ -82,7 +103,7 @@ export default function AssignTicketModal({
         <button
           onClick={handleAssign}
           disabled={loading || !selectedAgent}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-white hover:bg-blue-700 disabled:bg-slate-400"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-3 font-semibold text-white transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <UserPlus size={18} />
           {loading ? "Assigning..." : "Assign Ticket"}
@@ -91,3 +112,4 @@ export default function AssignTicketModal({
     </div>
   );
 }
+

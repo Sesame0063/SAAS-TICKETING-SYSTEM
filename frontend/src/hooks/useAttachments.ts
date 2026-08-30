@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import type { Attachment } from "../api/attachmentApi";
 import { getAttachments, uploadAttachment, deleteAttachment } from "../api/attachmentApi";
 
@@ -37,4 +37,5 @@ export default function useAttachments(ticketId: string) {
     refresh: loadAttachments,
   };
 }
+
 

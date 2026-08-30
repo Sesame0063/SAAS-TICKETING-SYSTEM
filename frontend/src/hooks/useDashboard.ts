@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { getDashboardStats } from "../api/dashboardApi";
 import type { DashboardStats } from "../api/dashboardApi";
 
@@ -34,3 +34,4 @@ export default function useDashboard() {
     reload: loadDashboard,
   };
 }
+

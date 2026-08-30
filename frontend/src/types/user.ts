@@ -1,4 +1,4 @@
-export type UserRole = "ADMIN" | "AGENT" | "CUSTOMER";
+﻿export type UserRole = "ADMIN" | "AGENT" | "CUSTOMER";
 
 export type UserStatus = "ACTIVE" | "INACTIVE";
 
@@ -44,3 +44,4 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
 }
+

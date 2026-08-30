@@ -1,7 +1,11 @@
 ﻿import { useEffect, useState } from "react";
 import { getProfile, type Profile } from "../api/profileApi";
+import { useAppDispatch } from "./redux";
+import { restoreUser, logout } from "../auth/authSlice";
 
 export function useProfile() {
+  const dispatch = useAppDispatch();
+
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -12,17 +16,31 @@ export function useProfile() {
       setError("");
 
       const data = await getProfile();
-      console.log("PROFILE API RESPONSE:", JSON.stringify(data, null, 2));
+
       setProfile(data);
+      dispatch(
+        restoreUser({
+          ...data,
+          role: data.role.toUpperCase(),
+        })
+      );
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to load profile.");
+
+      if (err.response?.status === 401) {
+        dispatch(logout());
+      }
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    refreshProfile();
+    if (localStorage.getItem("access_token")) {
+      refreshProfile();
+    } else {
+      setLoading(false);
+    }
   }, []);
 
   return {
@@ -32,5 +50,4 @@ export function useProfile() {
     refreshProfile,
   };
 }
-
 

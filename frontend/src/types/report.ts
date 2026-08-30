@@ -1,4 +1,4 @@
-export interface DashboardSummary {
+﻿export interface DashboardSummary {
   total_tickets: number;
   open_tickets: number;
   in_progress_tickets: number;
@@ -47,4 +47,5 @@ export interface CsvExportResponse {
 export interface PdfExportResponse {
   url: string;
 }
+
 

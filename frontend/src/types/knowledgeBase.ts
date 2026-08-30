@@ -1,4 +1,4 @@
-export interface KnowledgeArticlePayload {
+﻿export interface KnowledgeArticlePayload {
   title: string;
   content: string;
   category: string;
@@ -12,3 +12,4 @@ export interface KnowledgeArticle {
   created_at: string;
   updated_at: string;
 }
+

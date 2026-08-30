@@ -1,4 +1,4 @@
-import { Upload, FileText, Trash2, Download } from "lucide-react";
+﻿import { Upload, FileText, Trash2, Download } from "lucide-react";
 import useAttachments from "../../hooks/useAttachments";
 import { downloadAttachment } from "../../api/attachmentApi";
 
@@ -22,13 +22,13 @@ export default function AttachmentList({ ticketId }: Props) {
   }
 
   return (
-    <div className="rounded-3xl bg-white border border-slate-200 p-6 shadow-md">
+    <div className="rounded-3xl bg-slate-50 dark:bg-slate-950 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-6 shadow-md">
       <h2 className="mb-5 text-xl font-semibold">Attachments</h2>
 
       <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 p-8 transition hover:border-blue-500">
         <Upload size={30} className="text-blue-600" />
 
-        <p className="mt-3 text-slate-600">
+        <p className="mt-3 text-slate-600 dark:text-slate-400 dark:text-slate-400">
           Click to upload an attachment
         </p>
 
@@ -40,11 +40,11 @@ export default function AttachmentList({ ticketId }: Props) {
       </label>
 
       {loading ? (
-        <p className="mt-5 text-slate-500">
+        <p className="mt-5 text-slate-500 dark:text-slate-400 dark:text-slate-400">
           Loading attachments...
         </p>
       ) : attachments.length === 0 ? (
-        <p className="mt-5 text-slate-500">
+        <p className="mt-5 text-slate-500 dark:text-slate-400 dark:text-slate-400">
           No attachments uploaded yet.
         </p>
       ) : (
@@ -52,7 +52,7 @@ export default function AttachmentList({ ticketId }: Props) {
           {attachments.map((file) => (
             <div
               key={file.id}
-              className="flex items-center justify-between rounded-xl bg-slate-50 p-4"
+              className="flex items-center justify-between rounded-xl bg-slate-50 dark:bg-slate-950 p-4"
             >
               <div className="flex items-center gap-3">
                 <FileText className="text-blue-600" />
@@ -62,7 +62,7 @@ export default function AttachmentList({ ticketId }: Props) {
                     {file.file_name}
                   </p>
 
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-400">
                     {(file.file_size / 1024).toFixed(1)} KB
                   </p>
                 </div>
@@ -90,3 +90,9 @@ export default function AttachmentList({ ticketId }: Props) {
     </div>
   );
 }
+
+
+
+
+
+

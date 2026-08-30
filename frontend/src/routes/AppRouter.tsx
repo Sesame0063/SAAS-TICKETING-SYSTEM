@@ -1,4 +1,6 @@
-﻿import { Navigate, Route, Routes } from "react-router-dom";
+﻿import TicketsPage from "../pages/shared/TicketsPage";
+import TicketDetailsPage from "../pages/shared/TicketDetailsPage";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -9,8 +11,6 @@ import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 
 // Shared Pages
 import DashboardPage from "../pages/shared/DashboardPage";
-import TicketsPage from "../pages/shared/TicketsPage";
-import TicketDetailsPage from "../pages/shared/TicketDetailsPage";
 import NotificationsPage from "../pages/shared/NotificationsPage";
 import UsersPage from "../pages/shared/UsersPage";
 import KnowledgeBasePage from "../pages/shared/KnowledgeBasePage";
@@ -65,7 +65,7 @@ export default function AppRouter() {
         <Route
           path="/users"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["ADMIN"]}>
               <UsersPage />
             </ProtectedRoute>
           }
@@ -75,7 +75,7 @@ export default function AppRouter() {
         <Route
           path="/agent-queue"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["ADMIN","AGENT"]}>
               <AgentQueuePage />
             </ProtectedRoute>
           }
@@ -105,7 +105,7 @@ export default function AppRouter() {
         <Route
           path="/reports"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["ADMIN","AGENT"]}>
               <ReportsPage />
             </ProtectedRoute>
           }
@@ -127,4 +127,12 @@ export default function AppRouter() {
       </Routes>
   );
 }
+
+
+
+
+
+
+
+
 

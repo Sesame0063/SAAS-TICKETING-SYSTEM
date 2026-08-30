@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import clsx from "clsx";
 
 interface CardProps {
@@ -20,3 +20,7 @@ export default function Card({ children, className }: CardProps) {
     </motion.div>
   );
 }
+
+
+
+

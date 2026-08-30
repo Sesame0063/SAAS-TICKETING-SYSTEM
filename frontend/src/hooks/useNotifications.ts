@@ -1,13 +1,19 @@
-import { useEffect, useState } from "react";
-import type { Notification } from "../api/notificationApi";
-import { getNotifications, markNotificationRead, deleteNotification } from "../api/notificationApi";
+﻿import { useEffect, useState } from "react";
+import {
+  getNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  deleteNotification,
+  type Notification,
+} from "../api/notificationApi";
 
 export default function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function refresh() {
+  async function reload() {
     try {
+      setLoading(true);
       const data = await getNotifications();
       setNotifications(data);
     } finally {
@@ -15,20 +21,38 @@ export default function useNotifications() {
     }
   }
 
-  async function markRead(id: string) {
+  async function markAsRead(id: string) {
     await markNotificationRead(id);
-    await refresh();
+    reload();
   }
 
-  async function remove(id: string) {
+  async function markAllAsRead() {
+    await markAllNotificationsRead();
+    reload();
+  }
+
+  async function removeNotification(id: string) {
     await deleteNotification(id);
-    await refresh();
+    reload();
   }
 
   useEffect(() => {
-    refresh();
+    reload();
   }, []);
 
-  return { notifications, loading, refresh, markRead, remove };
+  return {
+    notifications,
+    unreadCount: notifications.filter((n) => !n.is_read).length,
+    loading,
+    reload,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification: removeNotification,
+  };
 }
+
+
+
+
+
 

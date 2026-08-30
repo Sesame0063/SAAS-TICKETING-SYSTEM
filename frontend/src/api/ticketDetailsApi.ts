@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 import type { Ticket } from "./ticketApi";
 
 export interface TicketHistoryItem {
@@ -44,3 +44,4 @@ export async function assignTicket(
   const { data } = await api.patch(`/tickets/${id}/assign`, payload);
   return data;
 }
+

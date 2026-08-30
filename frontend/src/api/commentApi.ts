@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 
 export interface Comment {
   id: string;
@@ -40,3 +40,4 @@ export async function deleteComment(
 ): Promise<void> {
   await api.delete(`/comments/${commentId}`);
 }
+

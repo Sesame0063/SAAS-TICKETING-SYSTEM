@@ -1,4 +1,4 @@
-export type WsEvent =
+﻿export type WsEvent =
   | "comment_created"
   | "ticket_assigned"
   | "ticket_status_changed"
@@ -60,3 +60,5 @@ export function disconnectWebSocket() {
   socket = null;
   connecting = false;
 }
+
+

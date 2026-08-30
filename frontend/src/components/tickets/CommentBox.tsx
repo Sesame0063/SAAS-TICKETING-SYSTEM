@@ -1,4 +1,5 @@
-import { useState } from "react";
+﻿import { useState } from "react";
+import { errorToast } from "../../utils/toast";
 import { Send, Trash2 } from "lucide-react";
 
 import useComments from "../../hooks/useComments";
@@ -27,7 +28,7 @@ export default function CommentBox({ ticketId }: Props) {
       await sendComment(text.trim());
       setText("");
     } catch {
-      alert("Failed to send comment.");
+      errorToast("Failed to send comment.");
     }
   }
 
@@ -37,23 +38,23 @@ export default function CommentBox({ ticketId }: Props) {
     try {
       await removeComment(commentId);
     } catch {
-      alert("Failed to delete comment.");
+      errorToast("Failed to delete comment.");
     }
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-md">
+    <div className="rounded-3xl border border-slate-300 bg-slate-50 dark:bg-slate-950 dark:border-slate-700 dark:bg-slate-900 p-6 shadow-md">
 
       <h2 className="mb-6 text-xl font-semibold">
         Comments
       </h2>
 
       {loading ? (
-        <p className="text-slate-500">
+        <p className="text-slate-500 dark:text-slate-400 dark:text-slate-400">
           Loading comments...
         </p>
       ) : comments.length === 0 ? (
-        <p className="mb-6 text-slate-500">
+        <p className="mb-6 text-slate-500 dark:text-slate-400 dark:text-slate-400">
           No comments yet.
         </p>
       ) : (
@@ -61,7 +62,7 @@ export default function CommentBox({ ticketId }: Props) {
           {comments.map((comment) => (
             <div
               key={comment.id}
-              className="rounded-2xl bg-slate-50 p-4"
+              className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-4"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -84,7 +85,7 @@ export default function CommentBox({ ticketId }: Props) {
                 )}
               </div>
 
-              <p className="mt-3 whitespace-pre-wrap text-slate-700">
+              <p className="mt-3 whitespace-pre-wrap text-slate-700 dark:text-slate-300 dark:text-slate-300">
                 {comment.content}
               </p>
             </div>
@@ -111,6 +112,15 @@ export default function CommentBox({ ticketId }: Props) {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
 
 
 

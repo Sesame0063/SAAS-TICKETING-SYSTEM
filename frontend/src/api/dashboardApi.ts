@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 
 export interface DashboardStats {
   total: number;
@@ -27,3 +27,4 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     closed: data.closed_tickets,
   };
 }
+

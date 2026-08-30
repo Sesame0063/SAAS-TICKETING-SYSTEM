@@ -1,4 +1,4 @@
-const comments = [
+﻿const comments = [
   {
     author:"Support Agent",
     text:"We are investigating this issue now.",
@@ -37,3 +37,7 @@ export default function CommentsPanel() {
     </div>
   );
 }
+
+
+
+

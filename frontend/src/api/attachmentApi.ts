@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 
 export interface Attachment {
   id: string;
@@ -44,3 +44,4 @@ export function downloadAttachment(id: string) {
     "_blank"
   );
 }
+

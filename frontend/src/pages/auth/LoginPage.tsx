@@ -1,47 +1,56 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+﻿import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { LogIn } from "lucide-react";
 
 import { loginUser, getCurrentUser } from "../../api/authApi";
+import { useAppDispatch } from "../../hooks/redux";
 import { loginSuccess } from "../../auth/authSlice";
 
 export default function LoginPage() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const [email, setEmail] = useState("saswatmohanty640@gmail.com");
-  const [password, setPassword] = useState("Agent@123456");
+  useEffect(() => {
+    if (localStorage.getItem("access_token")) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
 
     try {
-      const response = await loginUser({ email, password });
+      setLoading(true);
+      setError("");
 
-      localStorage.setItem("access_token", response.access_token);
-      localStorage.setItem("refresh_token", response.refresh_token);
+      const tokens = await loginUser({ email, password });
 
-      dispatch(
-        loginSuccess({
-          accessToken: response.access_token,
-          refreshToken: response.refresh_token,
-        })
-      );
+      localStorage.setItem("access_token", tokens.access_token);
+      localStorage.setItem("refresh_token", tokens.refresh_token);
 
       const user = await getCurrentUser();
 
-      localStorage.setItem("user_role", user.role.toUpperCase());
-      localStorage.setItem(
-        "user_name",
-        `${user.first_name} ${user.last_name}`
-      );
-      localStorage.setItem("user_email", user.email);
-      localStorage.setItem("user_id", user.id);
+      localStorage.setItem("current_user", JSON.stringify(user));
+      localStorage.setItem("user_role", user.role);
 
-      navigate("/dashboard");
-    } catch {
-      setError("Invalid email or password.");
+      dispatch(
+        loginSuccess({
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+          user,
+        })
+      );
+
+      navigate("/dashboard", { replace: true });
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -49,46 +58,76 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-slate-100">
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl"
+        className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl"
       >
-        <h1 className="text-3xl font-bold text-slate-800">Login</h1>
+        <h1 className="mb-2 text-center text-3xl font-bold text-slate-800">
+          SaaS Ticketing Login
+        </h1>
 
-        <p className="mt-2 text-slate-500">
-          SaaS Customer Ticketing System
+        <p className="mb-8 text-center text-slate-500">
+          Sign in to continue.
         </p>
 
         {error && (
-          <p className="mt-4 rounded-lg bg-red-100 p-3 text-red-600">
+          <div className="mb-4 rounded-xl bg-red-100 p-3 text-red-700">
             {error}
-          </p>
+          </div>
         )}
 
         <input
-          className="mt-6 w-full rounded-xl border p-3"
-          placeholder="Email"
+          type="email"
+          placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="mb-4 w-full rounded-xl border p-3"
+          required
         />
 
         <input
-          className="mt-4 w-full rounded-xl border p-3"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          className="mb-6 w-full rounded-xl border p-3"
+          required
         />
 
-        <button className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700">
-          Login
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 font-medium text-white hover:bg-blue-700 disabled:bg-slate-400"
+        >
+          <LogIn size={18} />
+          {loading ? "Signing in..." : "Sign In"}
         </button>
 
-        <Link
-          to="/forgot-password"
-          className="mt-4 block text-center text-blue-600"
-        >
-          Forgot Password?
-        </Link>
+        <div className="mt-6 text-center text-sm">
+          <Link
+            to="/forgot-password"
+            className="text-blue-600 hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
+        <div className="mt-2 text-center text-sm">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-medium text-blue-600 hover:underline"
+          >
+            Register
+          </Link>
+        </div>
       </form>
     </div>
   );
 }
+
+
+
+
+
+
+
+

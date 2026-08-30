@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 
 export interface LoginRequest {
   email: string;
@@ -31,3 +31,4 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   const { data } = await api.get("/me");
   return data;
 }
+

@@ -1,4 +1,4 @@
-import Card from "../common/Card";
+﻿import Card from "../common/Card";
 import { ArrowUpRight } from "lucide-react";
 
 interface Props {
@@ -38,3 +38,7 @@ export default function StatCard({
     </Card>
   );
 }
+
+
+
+

@@ -1,4 +1,4 @@
-import api from "./axios";
+﻿import api from "./axios";
 
 export interface Notification {
   id: string;
@@ -8,15 +8,21 @@ export interface Notification {
   created_at: string;
 }
 
-export async function getNotifications(): Promise<Notification[]> {
+export async function getNotifications() {
   const { data } = await api.get("/notifications");
   return data;
 }
 
-export async function markNotificationRead(id: string): Promise<void> {
+export async function markNotificationRead(id: string) {
   await api.patch(`/notifications/${id}/read`);
 }
 
 export async function deleteNotification(id: string): Promise<void> {
   await api.delete(`/notifications/${id}`);
 }
+
+export async function markAllNotificationsRead(): Promise<void> {
+  await api.patch("/notifications/read-all");
+}
+
+

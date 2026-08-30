@@ -1,64 +1,173 @@
-﻿html.light {
-  color-scheme: light;
+:root{
+  --background:#040B1D;
+  --background-secondary:#081325;
+  --surface:#0F1B34;
+  --surface-light:#18294A;
+  --surface-hover:#213763;
+
+  --primary:#2563EB;
+  --primary-light:#3B82F6;
+  --cyan:#22D3EE;
+  --purple:#7C3AED;
+  --green:#22C55E;
+  --orange:#F59E0B;
+  --red:#EF4444;
+
+  --text:#F8FAFC;
+  --muted:#94A3B8;
+  --border:rgba(255,255,255,.08);
+
+  --shadow:0 18px 45px rgba(0,0,0,.45);
 }
 
-html.dark {
-  color-scheme: dark;
+html.light{
+  --background:#EEF4FF;
+  --background-secondary:#F8FBFF;
+  --surface:#FFFFFF;
+  --surface-light:#F3F7FD;
+  --surface-hover:#E8F1FF;
+  --text:#0F172A;
+  --muted:#64748B;
+  --border:#E2E8F0;
 }
 
-html.dark body {
-  background:#0f172a;
-  color:#e2e8f0;
+body{
+  background:
+    radial-gradient(circle at top right,#2563EB22,transparent 25%),
+    radial-gradient(circle at bottom left,#06B6D422,transparent 30%),
+    linear-gradient(180deg,var(--background),var(--background-secondary));
+  color:var(--text);
 }
 
-html.dark .dashboard-layout {
-  background:#0f172a;
+/* ---------- Glass Card ---------- */
+
+.glass-card{
+  background:rgba(15,27,52,.88);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.06);
+  box-shadow:var(--shadow);
+  border-radius:24px;
 }
 
-html.dark .sidebar {
-  background:#020617;
+html.light .glass-card{
+  background:white;
+  border:1px solid #E5EDF9;
+}
+
+/* ---------- Hero Banner ---------- */
+
+.page-header{
+  position:relative;
+  overflow:hidden;
+  padding:32px;
+  border-radius:30px;
+  background:
+    radial-gradient(circle at top right,#22D3EE33,transparent 30%),
+    radial-gradient(circle at bottom left,#7C3AED33,transparent 35%),
+    linear-gradient(135deg,#142A57,#173E8D,#134E8B);
+  box-shadow:0 25px 50px rgba(37,99,235,.25);
+}
+
+.page-header h1{
+  font-size:2.4rem;
+  font-weight:800;
   color:white;
 }
 
-html.dark .topbar {
-  background:#111827;
-  border-color:#1f2937;
+.page-header p{
+  color:#CDE8FF;
 }
 
-html.dark .card,
-html.dark .rounded-2xl,
-html.dark .rounded-3xl,
-html.dark table,
-html.dark .bg-white {
-  background:#1e293b !important;
-  color:#f8fafc;
+/* ---------- Page Titles ---------- */
+
+.page-title{
+  color:var(--text);
+  font-size:2rem;
+  font-weight:700;
 }
 
-html.dark input,
-html.dark textarea,
-html.dark select {
-  background:#0f172a;
+.page-subtitle{
+  color:var(--muted);
+  margin-top:6px;
+}
+
+/* ---------- KPI Cards ---------- */
+
+.metric-card{
+  background:
+    linear-gradient(180deg,#182C52,#101D38);
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,.06);
+  padding:22px;
+  transition:.25s ease;
+}
+
+.metric-card:hover{
+  transform:translateY(-4px);
+  box-shadow:
+    0 20px 35px rgba(0,0,0,.45),
+    0 0 25px rgba(37,99,235,.25);
+}
+
+.metric-number{
   color:white;
-  border-color:#334155;
+  font-size:2rem;
+  font-weight:800;
 }
 
-html.dark th {
-  background:#334155 !important;
+/* ---------- Buttons ---------- */
+
+.primary-button{
+  background:linear-gradient(90deg,#2563EB,#22D3EE);
+  color:white;
+  border:none;
+  border-radius:16px;
+  padding:12px 20px;
+  font-weight:600;
+  transition:.25s;
 }
 
-html.dark tr {
-  border-color:#334155;
+.primary-button:hover{
+  box-shadow:0 0 20px rgba(34,211,238,.35);
+  transform:translateY(-2px);
 }
 
-html.dark .text-slate-800 {
-  color:#f8fafc !important;
+/* ---------- Sidebar ---------- */
+
+.sidebar-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:18px;
 }
 
-html.dark .text-slate-700 {
-  color:#e2e8f0 !important;
+/* ---------- Scrollbar ---------- */
+
+::-webkit-scrollbar{
+  width:8px;
 }
 
-html.dark .text-slate-600,
-html.dark .text-slate-500 {
-  color:#cbd5e1 !important;
+::-webkit-scrollbar-thumb{
+  background:#334155;
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#475569;
+}
+
+/* ---------- Animation ---------- */
+
+.fade-up{
+  animation:fadeUp .45s ease;
+}
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(18px);
+  }
+  to{
+    opacity:1;
+    transform:none;
+  }
 }

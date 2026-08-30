@@ -1,23 +1,27 @@
-interface Props {
+﻿interface Props {
   status: string;
 }
 
 export default function StatusBadge({ status }: Props) {
-  const styles: Record<string, string> = {
-    Open: "bg-blue-100 text-blue-700",
-    Pending: "bg-yellow-100 text-yellow-700",
-    "In Progress": "bg-orange-100 text-orange-700",
-    Resolved: "bg-green-100 text-green-700",
-    Closed: "bg-slate-200 text-slate-700",
+  const s = status.toLowerCase();
+
+  const styles: Record<string,string> = {
+    open: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    "in progress": "bg-violet-500/20 text-violet-300 border-violet-500/30",
+    pending: "bg-amber-500/20 text-amber-300 border-amber-500/30",
+    resolved: "bg-green-500/20 text-green-300 border-green-500/30",
+    closed: "bg-slate-500/20 text-slate-300 border-slate-500/30",
   };
 
   return (
     <span
-      className={`rounded-full px-3 py-1 text-xs font-semibold ${
-        styles[status] || "bg-gray-100 text-gray-600"
-      }`}
+      className={`rounded-full border px-3 py-1 text-xs font-semibold ${styles[s] ?? styles.open}`}
     >
       {status}
     </span>
   );
 }
+
+
+
+

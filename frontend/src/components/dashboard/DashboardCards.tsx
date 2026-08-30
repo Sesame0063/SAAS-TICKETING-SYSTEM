@@ -1,26 +1,74 @@
-const cards = [
-  { title: "Open Tickets", value: 14, color: "bg-blue-500" },
-  { title: "In Progress", value: 6, color: "bg-yellow-500" },
-  { title: "Resolved", value: 28, color: "bg-green-500" },
-  { title: "Closed", value: 51, color: "bg-slate-700" },
-];
+﻿import {
+  Ticket,
+  Clock3,
+  CheckCircle2,
+  Archive,
+  ShieldCheck,
+  Bell,
+} from "lucide-react";
 
-export default function DashboardCards() {
+import KPICard from "../analytics/KPICard";
+
+type Props = {
+  report: any;
+};
+
+export default function DashboardCards({ report }: Props) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      {cards.map((card) => (
-        <div key={card.title} className="rounded-2xl bg-white p-6 shadow">
-          <div className={`h-2 w-16 rounded-full ${card.color}`} />
+    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 
-          <p className="mt-5 text-sm text-slate-500">
-            {card.title}
-          </p>
+      <KPICard
+        title="Open Tickets"
+        value={report?.open_tickets ?? 0}
+        change={8}
+        icon={<Ticket className="text-white" />}
+        color="bg-cyan-500"
+      />
 
-          <h2 className="mt-2 text-4xl font-bold text-slate-800">
-            {card.value}
-          </h2>
-        </div>
-      ))}
+      <KPICard
+        title="Pending Tickets"
+        value={report?.pending_tickets ?? 0}
+        change={2}
+        icon={<Clock3 className="text-white" />}
+        color="bg-amber-500"
+      />
+
+      <KPICard
+        title="Resolved Tickets"
+        value={report?.resolved_tickets ?? 0}
+        change={12}
+        icon={<CheckCircle2 className="text-white" />}
+        color="bg-emerald-500"
+      />
+
+      <KPICard
+        title="Closed Tickets"
+        value={report?.closed_tickets ?? 0}
+        change={6}
+        icon={<Archive className="text-white" />}
+        color="bg-violet-600"
+      />
+
+      <KPICard
+        title="SLA Health"
+        value={99}
+        change={3}
+        icon={<ShieldCheck className="text-white" />}
+        color="bg-green-600"
+      />
+
+      <KPICard
+        title="Notifications"
+        value={16}
+        change={4}
+        icon={<Bell className="text-white" />}
+        color="bg-pink-500"
+      />
+
     </div>
   );
 }
+
+
+
+

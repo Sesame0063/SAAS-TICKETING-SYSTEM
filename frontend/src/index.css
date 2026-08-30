@@ -27,3 +27,127 @@ body {
   background: #cbd5e1;
   border-radius: 999px;
 }
+
+
+.page-header{
+  margin-bottom:2rem;
+  padding:2rem 2.25rem;
+  border-radius:28px;
+  background:linear-gradient(135deg,#0f172a,#172554,#1d4ed8);
+  color:white;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 25px 70px rgba(37,99,235,.30);
+}
+
+.page-header::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at top right,rgba(34,211,238,.25),transparent 35%),
+    radial-gradient(circle at bottom left,rgba(168,85,247,.20),transparent 35%);
+}
+
+.page-header>*{
+  position:relative;
+  z-index:2;
+}
+
+.page-header .subtitle{
+  color:#67e8f9;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  font-size:.72rem;
+  font-weight:700;
+  margin-bottom:.75rem;
+}
+
+.page-header h1{
+  font-size:2.5rem;
+  font-weight:800;
+  color:white;
+}
+
+.page-header p{
+  margin-top:.75rem;
+  color:#cbd5e1;
+  max-width:700px;
+  line-height:1.8;
+}
+.glass-card{
+  @apply rounded-[28px] border border-slate-700 bg-slate-900/60 backdrop-blur-xl shadow-2xl;
+}
+
+.page-header{
+  @apply rounded-[32px] bg-gradient-to-br from-[#091B34] via-[#142850] to-[#1E3A8A] p-8 text-white shadow-[0_25px_80px_rgba(37,99,235,.35)];
+}
+
+.page-header h1{
+  @apply text-4xl font-black tracking-tight text-white;
+}
+
+.page-header p{
+  @apply mt-2 text-slate-300;
+}
+
+.subtitle{
+  @apply text-xs uppercase tracking-[0.35em] text-cyan-300 font-semibold;
+}
+
+body{
+  @apply bg-[#020817] text-white;
+}
+
+main{
+  @apply bg-[#020817];
+}
+html,body,#root{
+  height:100%;
+}
+
+body{
+  background:#020817;
+  color:white;
+  font-family:Inter,system-ui,sans-serif;
+}
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#334155;
+  border-radius:9999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#475569;
+}
+
+.glass-card{
+  @apply rounded-[28px] border border-slate-700 bg-slate-900/60 backdrop-blur-xl;
+}
+
+.page-header{
+  @apply rounded-[32px] bg-gradient-to-br from-[#091B34] via-[#142850] to-[#1E3A8A] p-8 text-white;
+}
+
+.subtitle{
+  @apply text-xs uppercase tracking-[0.35em] text-cyan-300 font-semibold;
+}
+
+.settings-input{
+  width:100%;
+  border-radius:18px;
+  border:1px solid rgba(71,85,105,.5);
+  background:rgba(15,23,42,.75);
+  color:white;
+  padding:14px 18px;
+  outline:none;
+}
+
+.settings-input:focus{
+  border-color:#22d3ee;
+  box-shadow:0 0 0 3px rgba(34,211,238,.15);
+}

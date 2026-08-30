@@ -1,8 +1,8 @@
-import { Search, Bell, CircleUserRound } from "lucide-react";
+﻿import { Search, Bell, CircleUserRound } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <header className="flex h-16 items-center justify-between bg-white px-6 shadow-sm">
+    <header className="flex h-{unreadCount} items-center justify-between bg-white px-6 shadow-sm">
       <div className="flex items-center gap-3 rounded-lg bg-slate-100 px-4 py-2 w-96">
         <Search size={18} className="text-slate-500" />
 
@@ -20,3 +20,8 @@ export default function Navbar() {
     </header>
   );
 }
+
+
+
+
+
