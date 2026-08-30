@@ -1,0 +1,43 @@
+# ==========================================
+# SaaS Ticketing System Frontend
+# Docker Ignore File
+# ==========================================
+
+# Dependencies
+node_modules
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+dist
+coverage
+
+# Git
+.git
+.gitignore
+
+# IDEs
+.vscode
+.idea
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary / Debug files
+clearAuth.js
+frontend-tree.txt
+*.bak
+*.tmp
+*.log
+
+# Documentation
+README.md

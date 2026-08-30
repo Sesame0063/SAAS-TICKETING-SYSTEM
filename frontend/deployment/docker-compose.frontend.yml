@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  frontend:
+    container_name: saas-ticketing-frontend
+
+    build:
+      context: ..
+      dockerfile: Dockerfile
+
+    image: saas-ticketing/frontend:v1.1
+
+    ports:
+      - "3000:80"
+
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    networks:
+      - saas-network
+
+networks:
+  saas-network:
+    driver: bridge
